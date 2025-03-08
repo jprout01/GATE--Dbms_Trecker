@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATE Prep Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container">
+        <button id="dark-mode-toggle">
+            <i class="fas fa-sun"></i>
+            <i class="fas fa-moon"></i>
+        </button>
+        <h1>GATE Preparation Tracker</h1>
+
+        <div class="checklist">
+            <h2>Dbms Topics Checklist</h2>
+            <table id="topics-table">
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Completed</th>
+                        <th>Total Videos</th>
+                        <th>Per/Day Watch</th>
+                    </tr>
+                </thead>
+                <tbody id="topics-body">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="progress-bar-container">
+            <h2>Overall Progress</h2>
+            <div class="custom-progress-bar">
+                <div class="progress-fill snake">
+                    <div class="runner"></div>
+                </div>
+                <div class="finish-line">
+                    <div class="flag"></div>
+                    <div class="pole"></div>
+                </div>
+                <span id="progress-text">0%</span>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
