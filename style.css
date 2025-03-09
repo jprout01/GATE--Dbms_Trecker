@@ -1,44 +1,57 @@
+/* Import Sci-Fi Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 /* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #0a0f1e;
+    color: #00d9ff; /* Light cyan text */
+    text-shadow: 0 0 5px #00d9ff;
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Dark Mode */
 .dark-mode {
-    background-color: #333;
-    color: #f0f0f0;
+    background-color: #090c14;
+    color: #e1e1e1;
 }
 
+/* Container */
 .container {
     width: 90%;
-    margin: 20px auto;
-    background-color: #fff;
+    margin: 40px auto;
+    background: linear-gradient(135deg, rgba(25, 32, 53, 0.8), rgba(30, 42, 75, 0.9));
     padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    transition: background-color 0.3s, color 0.3s;
+    box-shadow: 0 0 20px rgba(0, 183, 255, 0.8);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 .dark-mode .container {
-    background-color: #444;
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(15, 20, 35, 0.8), rgba(20, 30, 55, 0.9));
+    box-shadow: 0 0 20px rgba(255, 0, 183, 0.5);
 }
 
+/* Headings */
 h1, h2 {
     text-align: center;
-    color: #2c3e50;
+    color: #00bfff; /* Neon blue */
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
+    text-transform: uppercase;
+    border-bottom: 2px solid #00d9ff;
+    padding-bottom: 10px;
     transition: color 0.3s;
 }
 
 .dark-mode h1, .dark-mode h2 {
-    color: #ddd;
+    color: #ff007f; /* Neon pink */
+    text-shadow: 0 0 15px rgba(255, 0, 183, 0.8);
 }
 
-/* Checklist Styles */
+/* Checklist Table */
 .checklist {
     margin-bottom: 30px;
     overflow-x: auto;
@@ -48,35 +61,33 @@ h1, h2 {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    background: rgba(20, 25, 50, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 #topics-table th, #topics-table td {
     padding: 12px 15px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(0, 183, 255, 0.3);
     text-align: left;
     transition: background-color 0.3s, color 0.3s;
 }
 
 #topics-table th {
-    background-color: #ecf0f1;
-    color: #777;
+    background: rgba(10, 15, 30, 0.9);
+    color: #00bfff;
 }
 
 .dark-mode #topics-table th {
-    background-color: #555;
-    color: #eee;
+    background: rgba(30, 15, 40, 0.9);
+    color: #ff007f;
 }
 
 .dark-mode #topics-table td {
-    border-bottom-color: #555;
+    border-bottom-color: rgba(255, 0, 183, 0.3);
 }
 
-/* Dark Mode Specific Table Styles */
-.dark-mode #topics-table {
-    color: #eee;
-}
-
-/* Progress Bar Styles */
+/* Progress Bar */
 .progress-bar-container {
     margin-top: 30px;
 }
@@ -84,67 +95,47 @@ h1, h2 {
 .custom-progress-bar {
     width: 100%;
     height: 35px;
-    background-color: #ccc; /* Changed background color */
-    border-radius: 10px; /* Rounded corners */
+    background-color: rgba(10, 15, 30, 0.8);
+    border-radius: 10px;
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.6);
 }
 
 .progress-fill {
     height: 100%;
-    background-color: #007bff; /* Changed fill color */
+    background: linear-gradient(45deg, #00bfff, #0077ff, #00bfff);
     width: 0%;
-    border-radius: 10px; /* Rounded corners for fill */
+    border-radius: 10px;
     position: relative;
     transition: width 0.3s linear;
-    overflow: hidden; /* Clip the runner */
-    animation: progress-animation 2s linear infinite;
+    animation: glowing-progress 2s infinite alternate;
 }
 
-.progress-fill.snake {
-    background-image: repeating-linear-gradient(
-        45deg,
-        #606dbc,
-        #606dbc 10px,
-        #465298 10px,
-        #465298 20px
-    );
-    background-size: 40px 40px;
-    animation: snake-animation 2s linear infinite;
-}
-
-@keyframes snake-animation {
+@keyframes glowing-progress {
     0% {
-        background-position: 0 0;
+        box-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
     }
     100% {
-        background-position: 40px 0;
+        box-shadow: 0 0 20px rgba(0, 191, 255, 1);
     }
 }
 
-@keyframes progress-animation {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 40px 0;
-    }
-}
-
+/* Runner Animation */
 .runner {
     position: absolute;
     top: 50%;
-    left: 10px; /* Initial position */
+    left: 10px;
     transform: translateY(-50%);
     width: 25px;
     height: 25px;
     background-image: url('runner.png');
     background-size: cover;
     z-index: 2;
-    transition: left 0.7s ease-in-out; /* Match progress-fill transition */
+    transition: left 0.7s ease-in-out;
 }
 
+/* Finish Line */
 .finish-line {
     position: absolute;
     top: 50%;
@@ -152,7 +143,6 @@ h1, h2 {
     transform: translateY(-50%);
     width: 50px;
     height: 50px;
-    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,19 +154,15 @@ h1, h2 {
     border-style: solid;
     border-width: 25px 0 25px 40px;
     border-color: transparent transparent transparent #e74c3c;
-    position: absolute;
-    left: -30px; /* Adjust to position correctly */
 }
 
 .pole {
     width: 6px;
     height: 60px;
     background-color: #333;
-    position: absolute;
-    left: -35px; /* Adjust to position correctly */
-    top: -5px;      /* Adjust to position correctly */
 }
 
+/* Progress Text */
 #progress-text {
     position: absolute;
     top: 50%;
@@ -194,19 +180,29 @@ h1, h2 {
     position: absolute;
     top: 20px;
     right: 20px;
-    background-color: transparent;
+    background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 20px;
-    color: #555;
-    transition: color 0.3s;
-    padding: 5px;
+    font-size: 24px;
+    color: #00bfff;
+    transition: color 0.3s, text-shadow 0.3s;
 }
 
 #dark-mode-toggle:hover {
-    color: #777;
+    color: #0077ff;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
 }
 
+.dark-mode #dark-mode-toggle {
+    color: #ff007f;
+}
+
+.dark-mode #dark-mode-toggle:hover {
+    color: #ff0055;
+    text-shadow: 0 0 10px rgba(255, 0, 183, 0.8);
+}
+
+/* Toggle Icons */
 #dark-mode-toggle i {
     display: block;
 }
@@ -223,7 +219,7 @@ body.dark-mode #dark-mode-toggle .fa-moon {
     display: block;
 }
 
-/* Animation */
+/* Animations */
 @keyframes finishLineAnimation {
     0% { transform: translateY(-50%) scale(1); }
     50% { transform: translateY(-50%) scale(1.1); }
@@ -232,4 +228,10 @@ body.dark-mode #dark-mode-toggle .fa-moon {
 
 .finish-line.active {
     animation: finishLineAnimation 1s ease-in-out infinite;
+}
+
+button:hover {
+    background: #00d9ff;
+    color: #0a0f1e;
+    box-shadow: 0 0 10px #00d9ff;
 }

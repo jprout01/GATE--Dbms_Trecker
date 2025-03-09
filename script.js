@@ -1,16 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const topics = [
-        { name: "ER Model", totalVideos: 11, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Relational Database Model", totalVideos: 11, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Conversion of ER model to Relational", totalVideos: 15, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Normalisation", totalVideos: 77, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "SQL", totalVideos: 22, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Relational Algebra", totalVideos: 43, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Transaction management and", totalVideos: 31, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "File structures", totalVideos: 25, watched: 0, lastWatchedDate: null, completed: false },
-        { name: "Practice Questions", totalVideos: 192, watched: 0, lastWatchedDate: null, completed: false }
-    ];
+// Firebase Configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
 
+const firebaseConfig = {
+    apiKey: "AIzaSyAFQFkMzU0ZqwUm-U46oObc8YYLOa8wnBw",
+    authDomain: "gate-prep-tracker.firebaseapp.com",
+    projectId: "gate-prep-tracker",
+    storageBucket: "gate-prep-tracker.firebasestorage.app",
+    messagingSenderId: "203856361148",
+    appId: "1:203856361148:web:931d8b55a531b617a0c2b9",
+    measurementId: "G-3Y1Y9D2FSV"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.addEventListener('DOMContentLoaded', async function () {
     const topicsBody = document.getElementById('topics-body');
     const progressFill = document.querySelector('.progress-fill');
     const progressText = document.getElementById('progress-text');
@@ -18,15 +24,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const container = document.querySelector('.container');
 
-    let darkMode = false; // Initial dark mode state
+    let topics = [];
 
     function formatDate(date) {
         if (!date) return '';
         const d = new Date(date);
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-        const year = d.getFullYear();
-        return `${month}/${day}/${year}`;
+        return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+    }
+
+    async function fetchTopics() {
+        const querySnapshot = await getDocs(collection(db, "topics"));
+        topics = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderTable();
+        updateProgressBar();
+    }
+
+    async function updateFirestore(index, field, value) {
+        const topicRef = doc(db, "topics", topics[index].id);
+        await updateDoc(topicRef, { [field]: value });
     }
 
     function renderTable() {
@@ -47,9 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateProgressBar() {
-        let totalWatched = 0;
-        let totalVideos = 0;
-
+        let totalWatched = 0, totalVideos = 0;
         topics.forEach(topic => {
             totalVideos += topic.totalVideos;
             totalWatched += topic.watched;
@@ -57,56 +70,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const progress = (totalWatched / totalVideos) * 100;
         progressFill.style.width = `${progress}%`;
-        
-        if (progress >= 100) {
-            progressText.textContent = 'Completed!';
-        } else {
-            progressText.textContent = `${progress.toFixed(1)}%`;
-        }
+        progressText.textContent = progress >= 100 ? 'Completed!' : `${progress.toFixed(1)}%`;
 
-        // Move runner along the progress bar
-        const runnerPosition = Math.min(progress, 100); // Ensure runner doesn't go beyond 100%
-        document.querySelector('.runner').style.left = `calc(${runnerPosition}% - 10px)`;
-
-        // Activate finish line animation when progress is 100%
-        if (progress >= 100) {
-            finishLine.classList.add('active');
-        } else {
-            finishLine.classList.remove('active');
-        }
+        document.querySelector('.runner').style.left = `calc(${Math.min(progress, 100)}% - 10px)`;
+        finishLine.classList.toggle('active', progress >= 100);
     }
 
-    topicsBody.addEventListener('change', function(event) {
+    topicsBody.addEventListener('change', async function (event) {
         const target = event.target;
+        const index = parseInt(target.dataset.index);
 
         if (target.type === 'checkbox') {
-            const index = parseInt(target.dataset.index);
             topics[index].completed = target.checked;
+            await updateFirestore(index, "completed", target.checked);
         } else if (target.type === 'number') {
-            const index = parseInt(target.dataset.index);
             const watched = parseInt(target.value) || 0;
-
             topics[index].watched = watched;
             topics[index].lastWatchedDate = new Date();
+            await updateFirestore(index, "watched", watched);
+            await updateFirestore(index, "lastWatchedDate", topics[index].lastWatchedDate);
         }
+        
         renderTable();
         updateProgressBar();
     });
 
-    darkModeToggle.addEventListener('click', function() {
-        darkMode = !darkMode;
-        document.body.classList.toggle('dark-mode', darkMode);
-
-        // Store the dark mode preference in localStorage
-        localStorage.setItem('darkMode', darkMode);
+    darkModeToggle.addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     });
 
-    // Check localStorage for dark mode preference on page load
     if (localStorage.getItem('darkMode') === 'true') {
-        darkMode = true;
         document.body.classList.add('dark-mode');
     }
 
-    renderTable();
-    updateProgressBar();
+    document.addEventListener("DOMContentLoaded", function () {
+        const progressFill = document.querySelector(".progress-fill");
+        const progressText = document.getElementById("progress-text");
+    
+        let progress = 0; // Example progress value (can be dynamic)
+        progressFill.style.width = progress + "%";
+        progressText.innerText = progress + "%";
+    
+        // Simulate progress increase
+        setTimeout(() => {
+            progress = 75; // Example: update progress dynamically
+            progressFill.style.width = progress + "%";
+            progressText.innerText = progress + "%";
+        }, 1000);
+    });
+
+    await fetchTopics();
 });
